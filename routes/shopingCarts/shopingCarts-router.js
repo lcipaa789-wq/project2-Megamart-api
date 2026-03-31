@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createShopingCart,
   addProductToShopingCart,
+  deleteItemFromCart,
 } = require("./shopingCarts-controller");
 const router = express.Router();
 
@@ -28,6 +29,22 @@ router.post("/add", async (req, res) => {
     res.json({
       message: "success",
       payload: cart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
+//remove item
+router.post("/removeProduct", async (req, res) => {
+  try {
+    const { userId, productId } = req.body;
+    const deleteItem = await deleteItemFromCart(userId, productId);
+    res.json({
+      message: "success",
+      payload: deleteItem,
     });
   } catch (error) {
     res.status(500).json({
