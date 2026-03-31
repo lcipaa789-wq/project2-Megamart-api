@@ -85,11 +85,47 @@ const getCartAndTotalPriceByUserId = async (userId) => {
     throw error;
   }
 };
+//update quantity
+const updateQauntity = async (userId, productId, quantity) => {
+  try {
+    //find cart
+    const cart = await ShopingCart.findOne({ user: userId });
+    if (!cart) {
+      throw new Error("Cart not found!");
+    }
+    //find item in array
+    const item = cart.items.find(
+      (item) => item.productId.toString() === productId,
+    );
+    if (!item) {
+      throw new Error("Product not found in cart");
+    }
+    //if negative
+    if (Number(quantity) === 0) {
+      cart.items = cart.items.filter(
+        (item) => item.productId.toString() !== productId,
+      );
+    } else {
+      if (Number(quantity) < 0) {
+        throw new Error("Quantity cannot be negative");
+      }
+    }
+    //update quantity
+    item.quantity = Number(quantity);
+    //save
+    await cart.save();
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createShopingCart,
   addProductToShopingCart,
   deleteItemFromCart,
   cleaningCart,
+  updateQauntity,
 
   getCartAndTotalPriceByUserId,
 };
