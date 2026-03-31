@@ -3,6 +3,7 @@ const {
   createShopingCart,
   addProductToShopingCart,
   deleteItemFromCart,
+  cleaningCart,
 } = require("./shopingCarts-controller");
 const router = express.Router();
 
@@ -22,10 +23,14 @@ router.post("/", async (req, res) => {
   }
 });
 //add item to cart
-router.post("/add", async (req, res) => {
+router.post("/:userId/add/:productId", async (req, res) => {
   try {
-    const { userId, productId, quantity } = req.body;
-    const cart = await addProductToShopingCart(userId, productId, quantity);
+    const { quantity } = req.body;
+    const cart = await addProductToShopingCart(
+      req.params.userId,
+      req.params.productId,
+      quantity,
+    );
     res.json({
       message: "success",
       payload: cart,
@@ -37,14 +42,31 @@ router.post("/add", async (req, res) => {
     });
   }
 });
-//remove item
-router.post("/removeProduct", async (req, res) => {
+//remove one item from cart
+router.delete("/:userId/remove/:productId", async (req, res) => {
   try {
-    const { userId, productId } = req.body;
-    const deleteItem = await deleteItemFromCart(userId, productId);
+    const cart = await deleteItemFromCart(
+      req.params.userId,
+      req.params.productId,
+    );
     res.json({
       message: "success",
-      payload: deleteItem,
+      payload: cart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
+//clear cart
+router.delete("/:userId/items", async (req, res) => {
+  try {
+    const cart = await cleaningCart(req.params.userId);
+    res.json({
+      message: "success",
+      payload: cart,
     });
   } catch (error) {
     res.status(500).json({

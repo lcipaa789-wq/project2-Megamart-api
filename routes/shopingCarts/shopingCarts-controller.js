@@ -48,10 +48,24 @@ const deleteItemFromCart = async (userId, productId) => {
     throw error;
   }
 };
-
+// cleaning cart
+const cleaningCart = async (userId) => {
+  try {
+    const cart = await ShopingCart.findOne({ user: userId });
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+    cart.items = [];
+    await cart.save();
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   createShopingCart,
   addProductToShopingCart,
   deleteItemFromCart,
+  cleaningCart,
 };
 console.log("hello");
