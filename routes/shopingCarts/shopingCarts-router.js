@@ -4,8 +4,24 @@ const {
   addProductToShopingCart,
   deleteItemFromCart,
   cleaningCart,
+  getShopingCartById,
 } = require("./shopingCarts-controller");
 const router = express.Router();
+//get
+router.get("/:id", async (req, res) => {
+  try {
+    const cart = await getShopingCartById(req.params.id);
+    res.json({
+      message: "success",
+      payload: cart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
 
 //create
 router.post("/", async (req, res) => {

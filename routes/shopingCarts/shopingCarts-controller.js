@@ -1,4 +1,18 @@
 const ShopingCart = require("./shopingCarts-model");
+
+//get by ID
+const getShopingCartById = async (shopingCartId) => {
+  try {
+    const cart = await ShopingCart.findById(shopingCartId);
+    if (!cart) {
+      throw new Error("cart not found");
+    }
+    return cart;
+  } catch (error) {
+    throw error;
+  }
+};
+//create
 const createShopingCart = async (shopingCartsData) => {
   const shopingCart = await ShopingCart.create(shopingCartsData);
   return shopingCart;
@@ -67,5 +81,6 @@ module.exports = {
   addProductToShopingCart,
   deleteItemFromCart,
   cleaningCart,
+  getShopingCartById,
 };
 console.log("hello");

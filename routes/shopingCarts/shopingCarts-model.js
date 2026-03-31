@@ -8,7 +8,6 @@ const shopingCartSchema = new mongoose.Schema(
       type: ObjectID,
       ref: "User",
       required: true,
-      unique: true,
     },
     items: [
       {
