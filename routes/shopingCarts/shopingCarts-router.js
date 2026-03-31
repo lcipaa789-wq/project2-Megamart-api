@@ -4,13 +4,14 @@ const {
   addProductToShopingCart,
   deleteItemFromCart,
   cleaningCart,
-  getShopingCartById,
+
+  getCartAndTotalPriceByUserId,
 } = require("./shopingCarts-controller");
 const router = express.Router();
 //get
-router.get("/:id", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const cart = await getShopingCartById(req.params.id);
+    const cart = await getCartAndTotalPriceByUserId(req.params.userId);
     res.json({
       message: "success",
       payload: cart,

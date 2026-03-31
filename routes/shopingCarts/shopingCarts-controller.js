@@ -1,17 +1,5 @@
 const ShopingCart = require("./shopingCarts-model");
 
-//get by ID
-const getShopingCartById = async (shopingCartId) => {
-  try {
-    const cart = await ShopingCart.findById(shopingCartId);
-    if (!cart) {
-      throw new Error("cart not found");
-    }
-    return cart;
-  } catch (error) {
-    throw error;
-  }
-};
 //create
 const createShopingCart = async (shopingCartsData) => {
   const shopingCart = await ShopingCart.create(shopingCartsData);
@@ -76,11 +64,32 @@ const cleaningCart = async (userId) => {
     throw error;
   }
 };
+//get all items and total price by userId
+const getCartAndTotalPriceByUserId = async (userId) => {
+  try {
+    const cart = await ShopingCart.findOne({ user: userId }).populate(
+      "items.productId",
+    );
+    if (!cart) {
+      throw new Error("cart not found");
+    }
+    const totalPrice = cart.items.reduce((sum, item) => {
+      return sum + item.productId.price * item.quantity;
+    }, 0);
+    return {
+      user: cart.user,
+      items: cart.items,
+      totalPrice,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   createShopingCart,
   addProductToShopingCart,
   deleteItemFromCart,
   cleaningCart,
-  getShopingCartById,
+
+  getCartAndTotalPriceByUserId,
 };
-console.log("hello");
