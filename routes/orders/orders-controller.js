@@ -1,7 +1,7 @@
 const Order = require("./orders-model");
 const ShopingCart = require("../shopingCarts/shopingCarts-model");
 const calculateCartTotalPrice = require("../../utils/utils");
-const { getProductById } = require("../products/products-controller");
+
 //placing an order from a cart
 
 const createOrderFromCart = async (userId) => {
@@ -41,15 +41,37 @@ const createOrderFromCart = async (userId) => {
   }
 };
 // get users orders
-const getAllOrders = async () => {
+const getAllOrders = async (queryData) => {
   try {
-    const orders = await Order.find();
+    // filtering orders by status
+    const filteredObject = {};
+    if (queryData.status) {
+      filteredObject.status = queryData.status;
+    }
+
+    const orders = await Order.find(filteredObject);
     return orders;
   } catch (error) {
     throw error;
   }
 };
+const updateOrderStatus = async (orderId, status) => {
+  const allowedStatuses = ["pending", "shipped", "delivered", "cancelled"];
+  if (!allowedStatuses.includes(status)) {
+    throw new Error("Invalid status");
+  }
+  const updatedOrder = await Order.findByIdAndUpdate(
+    orderId,
+    { status },
+    { new: true },
+  );
+  if (!updatedOrder) {
+    throw new Error("Order not found");
+  }
+  return updatedOrder;
+};
 module.exports = {
   createOrderFromCart,
   getAllOrders,
+  updateOrderStatus,
 };
