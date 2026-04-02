@@ -1,22 +1,19 @@
 const mongoose = require("mongoose");
 
-const User = require("../users/users-model");
-const ShopingCart = require("../shopingCarts/shopingCarts-model");
-const Product = require("../products/products-model");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const ordersSchema = new mongoose.Schema(
   {
-    customer: {
+    user: {
       type: ObjectId,
       ref: "User",
       required: true,
     },
     items: [
       {
-        productId: {
+        productFromCartId: {
           type: ObjectId,
-          ref: "Product",
+          ref: "ShopingCart",
           required: true,
         },
         quantity: {

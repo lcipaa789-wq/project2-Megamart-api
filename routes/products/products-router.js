@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 //get product
 router.get("/", async (req, res) => {
   try {
-    const products = await getAllProducts();
+    const products = await getAllProducts(req.query);
     res.json({
       message: "failure",
       payload: products,

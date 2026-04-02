@@ -9,9 +9,29 @@ const createProduct = async (productData) => {
   }
 };
 
-const getAllProducts = async () => {
+const getAllProducts = async (queryData) => {
   try {
-    const product = await Product.find();
+    //filtering
+    //
+    //categoty
+    const filterObject = {};
+    if (queryData.category) {
+      filterObject.category = queryData.category;
+    }
+    //price
+    filterObject.price = {
+      $gte: queryData.minPrice || 0,
+      $lte: queryData.maxPrice || Infinity,
+    };
+    //in-stock
+    if (queryData === true) {
+      filterObject.stock = { $gt: 0 };
+    }
+    //sort
+    const sortObject = {};
+    sortObject[queryData.sortby || "_id"] = queryData.sortOrder || "asc";
+
+    const product = await Product.find(filterObject);
     return product;
   } catch (error) {
     throw error;

@@ -1,3 +1,4 @@
+const calculateCartTotalPrice = require("../../utils/utils");
 const ShopingCart = require("./shopingCarts-model");
 
 //create
@@ -39,7 +40,7 @@ const deleteItemFromCart = async (userId, productId) => {
   try {
     let cart = await ShopingCart.findOne({ user: userId });
     if (!cart) {
-      throw "Cart not found";
+      throw new Error("Cart not found");
     }
     cart.items = cart.items.filter(
       (item) => item.productId.toString() !== productId,
@@ -73,9 +74,7 @@ const getCartAndTotalPriceByUserId = async (userId) => {
     if (!cart) {
       throw new Error("cart not found");
     }
-    const totalPrice = cart.items.reduce((sum, item) => {
-      return sum + item.productId.price * item.quantity;
-    }, 0);
+    const totalPrice = calculateCartTotalPrice(cart.items);
     return {
       user: cart.user,
       items: cart.items,
@@ -101,17 +100,17 @@ const updateQauntity = async (userId, productId, quantity) => {
       throw new Error("Product not found in cart");
     }
     //if negative
+    if (Number(quantity) < 0) {
+      throw new Error("Quantity cannot be negative");
+    }
     if (Number(quantity) === 0) {
       cart.items = cart.items.filter(
         (item) => item.productId.toString() !== productId,
       );
     } else {
-      if (Number(quantity) < 0) {
-        throw new Error("Quantity cannot be negative");
-      }
+      //update quantity
+      item.quantity = Number(quantity);
     }
-    //update quantity
-    item.quantity = Number(quantity);
     //save
     await cart.save();
     return cart;
