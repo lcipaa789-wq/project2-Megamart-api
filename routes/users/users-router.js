@@ -5,6 +5,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  logginUser,
 } = require("./users-controller");
 const router = express.Router();
 
@@ -15,6 +16,21 @@ router.post("/", async (req, res) => {
     res.json({
       message: "success",
       payload: newUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
+//login data
+router.post("/login", async (req, res) => {
+  try {
+    const userLoggedIn = await logginUser(req.body);
+    res.json({
+      message: "success",
+      payload: `${userLoggedIn.name} has logged in successfully`,
     });
   } catch (error) {
     res.status(500).json({

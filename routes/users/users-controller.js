@@ -19,6 +19,27 @@ const createUser = async (userData) => {
     throw error;
   }
 };
+const logginUser = async (userData) => {
+  try {
+    //verify that username exists in database
+    const user = await User.findOne({ name: userData.name });
+    if (!user) {
+      throw "User not found";
+    }
+    //compare the incoming password with hashed password in the database
+    //.compare(incomingPassword, hashedPassword)
+    const isCorrectPassword = await bcrypt.compare(
+      userData.password,
+      user.password,
+    );
+    if (!isCorrectPassword) {
+      throw "Password do not match";
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const getAllUsers = async () => {
   try {
@@ -69,4 +90,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  logginUser,
 };
