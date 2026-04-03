@@ -24,14 +24,22 @@ const getAllProducts = async (queryData) => {
       $lte: queryData.maxPrice || Infinity,
     };
     //in-stock
-    if (queryData === true) {
+    if (queryData.inStock === true) {
       filterObject.stock = { $gt: 0 };
     }
     //sort
     const sortObject = {};
-    sortObject[queryData.sortby || "_id"] = queryData.sortOrder || "asc";
+    sortObject[queryData.sortby || "_id"] =
+      queryData.sortOrder || "asc" ? -1 : 1;
+    //pagination
+    const page = Number(queryData.page) || 1;
+    const limit = Number(queryData.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    const product = await Product.find(filterObject);
+    const product = await Product.find(filterObject)
+      .sort(sortObject)
+      .skip(skip)
+      .limit(limit);
     return product;
   } catch (error) {
     throw error;

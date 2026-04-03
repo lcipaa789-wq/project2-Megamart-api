@@ -3,8 +3,12 @@ const ShopingCart = require("./shopingCarts-model");
 
 //create
 const createShopingCart = async (shopingCartsData) => {
-  const shopingCart = await ShopingCart.create(shopingCartsData);
-  return shopingCart;
+  try {
+    const shopingCart = await ShopingCart.create(shopingCartsData);
+    return shopingCart;
+  } catch (error) {
+    throw error;
+  }
 };
 
 //

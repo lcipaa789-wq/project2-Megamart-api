@@ -16,6 +16,8 @@ const productsRouter = require("./routes/products/products-router");
 app.use("/api/v1/products", productsRouter);
 const shopingCartsRouter = require("./routes/shopingCarts/shopingCarts-router");
 app.use("/api/v1/shopingCarts", shopingCartsRouter);
+const reviewsRouter = require("./routes/reviews/reviews-router");
+app.use("/api/v1/reviews", reviewsRouter);
 
 const PORT = 3000;
 

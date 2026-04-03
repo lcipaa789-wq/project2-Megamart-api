@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
   try {
     const products = await getAllProducts(req.query);
     res.json({
-      message: "failure",
+      message: "success",
       payload: products,
     });
   } catch (error) {
