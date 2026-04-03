@@ -1,5 +1,8 @@
 const User = require("./users-model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const createUser = async (userData) => {
   try {
@@ -35,7 +38,11 @@ const logginUser = async (userData) => {
     if (!isCorrectPassword) {
       throw "Password do not match";
     }
-    return user;
+    //setup JWT token for user
+    //jwt.sign({payload}, secretKey)
+    const token = jwt.sign({ name: user.name }, process.env.JWT_SECRET_KEY);
+
+    return { name: user.name, token: token };
   } catch (error) {
     throw error;
   }

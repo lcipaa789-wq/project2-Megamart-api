@@ -1,4 +1,5 @@
 const express = require("express");
+const verifyToken = require("../../middleware/authMiddleware");
 const {
   createUser,
   getAllUsers,
@@ -8,6 +9,19 @@ const {
   logginUser,
 } = require("./users-controller");
 const router = express.Router();
+router.get("/profile", verifyToken, (req, res) => {
+  try {
+    res.json({
+      message: "success",
+      payload: "Secure user profile information",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
 
 //create new customer
 router.post("/", async (req, res) => {
@@ -30,7 +44,8 @@ router.post("/login", async (req, res) => {
     const userLoggedIn = await logginUser(req.body);
     res.json({
       message: "success",
-      payload: `${userLoggedIn.name} has logged in successfully`,
+      payload: `${userLoggedIn.name} has logged in successfully. `,
+      token: userLoggedIn.token,
     });
   } catch (error) {
     res.status(500).json({
