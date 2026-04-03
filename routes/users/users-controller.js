@@ -1,8 +1,19 @@
 const User = require("./users-model");
+const bcrypt = require("bcrypt");
 
 const createUser = async (userData) => {
   try {
-    const newUser = await User.create(userData);
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
+    const secureUserData = {
+      name: userData.name,
+      password: hashedPassword,
+      email: userData.email,
+      address: userData.address,
+      phone: userData.phone,
+    };
+
+    const newUser = await User.create(secureUserData);
     return newUser;
   } catch (error) {
     throw error;
